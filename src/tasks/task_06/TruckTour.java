@@ -1,45 +1,50 @@
 package tasks.task_06;
 
 import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.Scanner;
 
 public class TruckTour {
 	
-	private Queue<GasPump> gasPumps;
+	private ArrayDeque<GasPump> gasPumps;
+	private ArrayDeque<GasPump> cloneQueue;
 	private int pumpsCount;
 	private int pumpsTravelled;
+	private int currentGas;
 	
 	public TruckTour() {
 		
 		gasPumps = new ArrayDeque<GasPump>();
 		readInput();
-		pumpsTravelled = 0;
 		
 		for (int i = 0; i < pumpsCount; i++) {
-			if (canMakeFullCircle(0)) {
+			cloneQueue = gasPumps.clone();
+			currentGas = 0;
+			pumpsTravelled = 0;
+			if (canMakeFullCircle()) {
 				System.out.println(i);
 				break;
 			}
+			gasPumps.add(gasPumps.poll());
 		}
 		
 	}
 	
-	private boolean canMakeFullCircle(int gas) {
+	private boolean canMakeFullCircle() {
 		
-		GasPump currGasPump = gasPumps.poll();
-		gasPumps.add(currGasPump);
+		GasPump currGasPump = cloneQueue.poll();
+		cloneQueue.add(currGasPump);
 		
-		gas += currGasPump.getGas();	//fill some gasoline...
+		currentGas += currGasPump.getGas();	//fill some gasoline...
 		
-		if (gas < currGasPump.getDistance()) {
+		if (currentGas < currGasPump.getDistance()) {
 			return false;
 		} else {
+			currentGas -= currGasPump.getDistance();
 			pumpsTravelled++;
 			if (pumpsTravelled == pumpsCount) {
 				return true;
 			}
-			return canMakeFullCircle(gas);
+			return canMakeFullCircle();
 		}
 	}
 
