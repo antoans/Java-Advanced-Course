@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class PoisonousPlants {
 	public PoisonousPlants() {
+		
 		//read input
 		Scanner sc = new Scanner(System.in);
 		int plantsCount = sc.nextInt();
@@ -14,29 +15,35 @@ public class PoisonousPlants {
 			plants.add(sc.nextInt());
 		}
 		sc.close();
+		//
 		
 		int daysPassed = 0;
 		ArrayDeque<Integer> plantsNextDay;
 		boolean plantsDying = true;
+		int length;
+		int firstPlant;
 		
 		while (plantsDying) {
+			length = plants.size();
 			plantsNextDay = new ArrayDeque<>();
 			plantsDying = false;
-			plantsNextDay.push(plants.pop());
 			
-			int length = plants.size();
 			int nextPlant;
+			int prevPlant = -1;	// -1 indicates that we are checking the first plant, which never dies
 			for (int i = 0; i < length; i++) {
-				nextPlant = plants.pop();
-				if (nextPlant <= plantsNextDay.peek()) {
-					plantsNextDay.push(nextPlant);
-				} else {
+				nextPlant = plants.poll();
+				if (prevPlant != -1 && nextPlant > prevPlant) {
 					plantsDying = true;
+				} else {
+					plantsNextDay.add(nextPlant);
 				}
+				prevPlant = nextPlant;
 			}
-			daysPassed++;
-			plants = plantsNextDay.clone();
+			//if no plant died, then we must print the number of days,
+			//leading to this day
+			if(plantsDying)  daysPassed++;
+			plants = plantsNextDay;
 		}
-		System.out.println(daysPassed - 1);
+		System.out.println(daysPassed);
 	}
 }
