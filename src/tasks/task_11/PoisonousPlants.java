@@ -3,47 +3,49 @@ package tasks.task_11;
 import java.util.ArrayDeque;
 import java.util.Scanner;
 
+import sun.security.util.PendingException;
+
 public class PoisonousPlants {
 	public PoisonousPlants() {
-		
+
 		//read input
 		Scanner sc = new Scanner(System.in);
-		int plantsCount = sc.nextInt();
+		int plantsCount = Integer.parseInt(sc.nextLine());
+		String[] input = sc.nextLine().split(" ");
+		
+		
 		ArrayDeque<Integer> plants = new ArrayDeque<>();
 		
 		for (int i = 0; i < plantsCount; i++) {
-			plants.add(sc.nextInt());
+			plants.add(Integer.parseInt(input[i]));
 		}
 		sc.close();
 		//
 		
 		int daysPassed = 0;
-		ArrayDeque<Integer> plantsNextDay;
 		boolean plantsDying = true;
 		int length;
-		int firstPlant;
+		int nextPlant;
+		int prevPlant;
 		
 		while (plantsDying) {
 			length = plants.size();
-			plantsNextDay = new ArrayDeque<>();
 			plantsDying = false;
 			
-			int nextPlant;
-			int prevPlant = -1;	// -1 indicates that we are checking the first plant, which never dies
+			prevPlant = Integer.MAX_VALUE;
 			for (int i = 0; i < length; i++) {
 				nextPlant = plants.poll();
-				if (prevPlant != -1 && nextPlant > prevPlant) {
+				if (nextPlant > prevPlant) {
 					plantsDying = true;
 				} else {
-					plantsNextDay.add(nextPlant);
+					plants.add(nextPlant);
 				}
 				prevPlant = nextPlant;
 			}
-			//if no plant died, then we must print the number of days,
-			//leading to this day
-			if(plantsDying)  daysPassed++;
-			plants = plantsNextDay;
+			
+			daysPassed++;
 		}
-		System.out.println(daysPassed);
+		System.out.println(daysPassed - 1);
+		//https://softuni.bg/forum/9722/useful-info-exercises-advanced-csharp-stacks-and-queues-problem-11-poisonous-plants-spoiler-alert
 	}
 }
